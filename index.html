@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BIR Tax Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #f9f9f9);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0d47a1;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      background: #1976d2;
+      color: white;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .tab-btn:hover {
+      background: #0d47a1;
+    }
+
+    .calculator {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      display: none;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0d47a1;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>BIR Tax Calculator</h1>
+
+  <div class="tabs">
+    <button class="tab-btn" onclick="showTab('income')">Income Tax</button>
+    <button class="tab-btn" onclick="showTab('vat')">VAT (12%)</button>
+    <button class="tab-btn" onclick="showTab('percentage')">Percentage Tax (3%)</button>
+  </div>
+
+  <!-- INCOME TAX -->
+  <div class="calculator" id="income">
+    <h2>Income Tax (TRAIN Law)</h2>
+
+    <label>Monthly Income (PHP)</label>
+    <input type="number" id="monthlyIncome" placeholder="Enter monthly income">
+
+    <button onclick="calculateIncomeTax()">Calculate Income Tax</button>
+
+    <div class="result" id="incomeOutput"></div>
+  </div>
+
+  <!-- VAT -->
+  <div class="calculator" id="vat">
+    <h2>VAT Calculator (12%)</h2>
+
+    <label>Sales Amount (PHP)</label>
+    <input type="number" id="vatSales" placeholder="Enter sales">
+
+    <button onclick="calculateVAT()">Calculate VAT</button>
+
+    <div class="result" id="vatOutput"></div>
+  </div>
+
+  <!-- PERCENTAGE TAX -->
+  <div class="calculator" id="percentage">
+    <h2>Percentage Tax (3%)</h2>
+
+    <label>Gross Receipts (PHP)</label>
+    <input type="number" id="percentageSales" placeholder="Enter gross receipts">
+
+    <button onclick="calculatePercentage()">Calculate Percentage Tax</button>
+
+    <div class="result" id="percentageOutput"></div>
+  </div>
+</div>
+
+<footer>
+  FREE BIR Tax Calculator Website — Works Offline
+</footer>
+
+<script>
+function showTab(tab) {
+  document.getElementById("income").style.display = "none";
+  document.getElementById("vat").style.display = "none";
+  document.getElementById("percentage").style.display = "none";
+
+  document.getElementById(tab).style.display = "block";
+}
+
+showTab("income");
+
+// Income Tax TRAIN Law
+function calculateIncomeTax() {
+  let monthly = parseFloat(document.getElementById("monthlyIncome").value);
+  let annual = monthly * 12;
+  let tax = 0;
+
+  if (annual <= 250000) {
+    tax = 0;
+  } else if (annual <= 400000) {
+    tax = (annual - 250000) * 0.15;
+  } else if (annual <= 800000) {
+    tax = 22500 + (annual - 400000) * 0.20;
+  } else if (annual <= 2000000) {
+    tax = 102500 + (annual - 800000) * 0.25;
+  } else if (annual <= 8000000) {
+    tax = 402500 + (annual - 2000000) * 0.30;
+  } else {
+    tax = 2202500 + (annual - 8000000) * 0.35;
+  }
+
+  let net = annual - tax;
+
+  document.getElementById("incomeOutput").innerHTML = `
+    Annual Income: ₱${annual.toLocaleString()}<br>
+    Tax Due: ₱${tax.toLocaleString()}<br>
+    Net Income: ₱${net.toLocaleString()}
+  `;
+}
+
+// VAT Calculator
+function calculateVAT() {
+  let sales = parseFloat(document.getElementById("vatSales").value);
+  let vat = sales * 0.12;
+  let total = sales + vat;
+
+  document.getElementById("vatOutput").innerHTML = `
+    Sales: ₱${sales.toLocaleString()}<br>
+    VAT (12%): ₱${vat.toLocaleString()}<br>
+    Total with VAT: ₱${total.toLocaleString()}
+  `;
+}
+
+// Percentage Tax
+function calculatePercentage() {
+  let gross = parseFloat(document.getElementById("percentageSales").value);
+  let tax = gross * 0.03;
+
+  document.getElementById("percentageOutput").innerHTML = `
+    Gross Receipts: ₱${gross.toLocaleString()}<br>
+    Percentage Tax (3%): ₱${tax.toLocaleString()}
+  `;
+}
+</script>
+
+</body>
+</html>
